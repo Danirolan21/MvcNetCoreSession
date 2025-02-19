@@ -7,8 +7,44 @@ namespace MvcNetCoreSession.Controllers
 {
     public class EjemploSessionController : Controller
     {
+        HelperSessionContextAccessor helper;
+
+        public EjemploSessionController(HelperSessionContextAccessor helper)
+        {
+            this.helper = helper;
+        }
         public IActionResult Index()
         {
+            List<Mascota> mascotas = this.helper.GetMascotasSession();
+            return View(mascotas);
+        }
+
+        public IActionResult SessionMascotasCollection(string accion)
+        {
+            if (accion != null)
+            {
+                if (accion.ToLower() == "almacenar")
+                {
+                    List<Mascota> mascotas = new List<Mascota>
+                    {
+                        new Mascota { Nombre = "Bobby", Raza = "Labrador", Edad = 5 },
+                        new Mascota { Nombre = "Luna", Raza = "Beagle", Edad = 3 },
+                        new Mascota { Nombre = "Max", Raza = "Golden Retriever", Edad = 7 },
+                        new Mascota { Nombre = "Nina", Raza = "Pomerania", Edad = 2 },
+                        new Mascota { Nombre = "Rocky", Raza = "Bulldog", Edad = 4 },
+                        new Mascota { Nombre = "Bella", Raza = "Dálmata", Edad = 6 },
+                        new Mascota { Nombre = "Simba", Raza = "Pastor Alemán", Edad = 8 }
+                    };
+                    HttpContext.Session.SetObject("MASCOTASCOLLECTION", mascotas);
+                    ViewData["MENSAJE"] = "Coleccion mascotas almacenada";
+                    return View();
+                }
+                else if (accion.ToLower() == "mostrar")
+                {
+                    List<Mascota> mascotas = HttpContext.Session.GetObject<List<Mascota>>("MASCOTASCOLLECTION");
+                    return View(mascotas);
+                }
+            }
             return View();
         }
 

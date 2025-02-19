@@ -1,3 +1,5 @@
+using MvcNetCoreSession.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,6 +13,9 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(10);
 });
+
+builder.Services.AddSingleton<HelperSessionContextAccessor>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
